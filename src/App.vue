@@ -86,7 +86,6 @@
 
       isDisabled: false,
 
-      page: 1,
       perpage: 30
     }
   },
@@ -177,33 +176,85 @@
       this.scorpion = results;
     },
     randomPage () {
-      this.page = Math.floor(Math.random()*200);
-      console.log(this.page);
+      return Math.floor(Math.random()*200);
     },
-    randomPageObsNum() {
-      return Math.floor(Math.random()*30);
+    randomPageObsNums() {
+      var randoms = [];
+      while(randoms.length < 4) {
+        var r = Math.floor(Math.random() * 30) + 1;
+          if(randoms.indexOf(r) === -1) randoms.push(r);
+      }
+      return randoms;
     },
     fetchScorpions () {
       Promise.all([
-      fetch(`${this.url_base}observations?verifiable=true&taxon_id=${this.query}&place_id=&order_by=votes&quality_grade=any&page=${this.page}&per_page=${this.perpage}`),
-      fetch(`${this.url_base}observations?verifiable=true&taxon_id=${this.query}&place_id=&order_by=votes&quality_grade=any&page=${this.page}&per_page=${this.perpage}`),
-      fetch(`${this.url_base}observations?verifiable=true&taxon_id=${this.query}&place_id=&order_by=votes&quality_grade=any&page=${this.page}&per_page=${this.perpage}`),
-      fetch(`${this.url_base}observations?verifiable=true&taxon_id=${this.query}&place_id=&order_by=votes&quality_grade=any&page=${this.page}&per_page=${this.perpage}`)
+      fetch(`${this.url_base}observations?verifiable=true&taxon_id=${this.query}&place_id=&order_by=votes&quality_grade=any&page=${this.randomPage()}&per_page=${this.perpage}`),
+      fetch(`${this.url_base}observations?verifiable=true&taxon_id=${this.query}&place_id=&order_by=votes&quality_grade=any&page=${this.randomPage()}&per_page=${this.perpage}`),
+      fetch(`${this.url_base}observations?verifiable=true&taxon_id=${this.query}&place_id=&order_by=votes&quality_grade=any&page=${this.randomPage()}&per_page=${this.perpage}`),
+      fetch(`${this.url_base}observations?verifiable=true&taxon_id=${this.query}&place_id=&order_by=votes&quality_grade=any&page=${this.randomPage()}&per_page=${this.perpage}`)
       ]).then(function (responses) {
         return Promise.all(responses.map(function (response) {
           return response.json();
         }));
       }).then(
-        this.setResults()
+        response => this.setResults(response)
         );
-        console.log(this.scorpion);
+    },
+    getMedium (string) {
+      var newString = string.replace('square', 'medium');
+      return newString;
+    },
+    checkNames (pageNums) {
+      var firstPageNum = pageNums[0];
+      var secondPageNum = pageNums[1];
+      var thirdPageNum = pageNums[2];
+      var fourthPageNum = pageNums[3];
+
+      var firstTaxa = this.scorpion[0].results[firstPageNum].taxon.name;
+      var secondTaxa = this.scorpion[0].results[secondPageNum].taxon.name;
+      var thirdTaxa = this.scorpion[0].results[thirdPageNum].taxon.name;
+      var fourthTaxa = this.scorpion[0].results[fourthPageNum].taxon.name;
+
+      firstTaxa = firstTaxa.trim().split(" ");
+      secondTaxa = secondTaxa.trim().split(" ");
+      thirdTaxa = thirdTaxa.trim().split(" ");
+      fourthTaxa = fourthTaxa.trim().split(" ");
+
+      if(firstTaxa.length == 1  || 
+         secondTaxa.length == 1 ||
+         thirdTaxa.length == 1  ||
+         fourthTaxa.length == 1 ) {
+           this.changePic
+         } else {
+          return
+         }
     },
     changePic () {
       this.fetchScorpions()
-      this.first = this.scorpion[0][0].url
-      this.second = this.scorpion[1][0].url
-      this.third = this.scorpion[2][0].url
-      this.fourth = this.scorpion[3][0].url
+      var pageNums = this.randomPageObsNums();
+      var firstPageNum = pageNums[0];
+      var secondPageNum = pageNums[1];
+      var thirdPageNum = pageNums[2];
+      var fourthPageNum = pageNums[3];
+
+      this.checkNames(pageNums);
+      var firstLink = this.scorpion[0].results[firstPageNum].photos[0].url;
+        this.first = this.getMedium(firstLink);
+                  this.firstname = this.scorpion[0].results[firstPageNum].taxon.name;
+
+      var secondLink = this.scorpion[0].results[secondPageNum].photos[0].url;
+        this.second = this.getMedium(secondLink);
+                this.secondname = this.scorpion[0].results[secondPageNum].taxon.name;
+
+
+      var thirdLink = this.scorpion[0].results[thirdPageNum].photos[0].url;
+        this.third = this.getMedium(thirdLink);
+        this.thirdname = this.scorpion[0].results[thirdPageNum].taxon.name;
+
+      var fourthLink = this.scorpion[0].results[fourthPageNum].photos[0].url;
+        this.fourth = this.getMedium(fourthLink);
+                this.fourthname = this.scorpion[0].results[fourthPageNum].taxon.name;
+
     }
     }
   }

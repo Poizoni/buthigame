@@ -1,24 +1,23 @@
-# ider
+# ButhiGame
 
-## Project setup
-```
-yarn install
-```
+ButhiGame is a web game using the iNaturalist API to practice your Buthidae identification skills.
 
-### Compiles and hot-reloads for development
+Randomized observation photos are fetched and displayed along with location / taxon name.
+
+## Website
+
+ [buthidae.pics](https://buthidae.pics/)
+
+## Usage
+
 ```
 yarn serve
+
+npm run build
 ```
 
-### Compiles and minifies for production
-```
-yarn build
-```
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## License
+[MIT](https://choosealicense.com/licenses/mit/)

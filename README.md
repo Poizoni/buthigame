@@ -1,6 +1,6 @@
 # ButhiGame
 
-ButhiGame is a web game using the iNaturalist API to practice your Buthidae identification skills.
+ButhiGame is a web game using the iNaturalist API to practice identifying your desired taxa.
 
 Randomized observation photos are fetched and displayed along with location / taxon name.
 

@@ -8,7 +8,7 @@ cd dist
 
 git init
 git add -A 
-git commit -m 'New Deployment'
+git commit -m 'V3 Update Deployment'
 git push -f git@github.com:Poizoni/ButhiGame.git master:gh-pages
 
 cd -

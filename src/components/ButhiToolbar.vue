@@ -90,7 +90,7 @@
 			if (guess.split(" ").length > 2) {
 			this.$parent.subspecies = guess.split(" ")[2];
 			}
-			this.$parent.setLocation();
+			this.$parent.showMaps();
 
 			this.$parent.firstWin = false;
 			this.$parent.secondWin = false;

@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-		<ButhiHeader :genus=genus :species=species :subspecies=subspecies :location=location />
+		<ButhiHeader :genus=genus :species=species :subspecies=subspecies />
 		<div class="main-screen">
 			<ButhiToolbar :score=score />
 			<ButhiMain @interface="getMainInterface" />
@@ -29,6 +29,7 @@
 		data() {
 			return {
 				url_base: "https://api.inaturalist.org/v1/",
+				map_url_base: "https://maps.google.com/?q=",
 				apiResult: undefined,
 				query: "",
 
@@ -41,8 +42,6 @@
 				genus: "Genus",
 				species: "species",
 				subspecies: undefined,
-
-				location: "location",
 
 				names: [],
 
@@ -70,6 +69,11 @@
 				secondLink: "",
 				thirdLink: "",
 				fourthLink: "",
+
+				firstMap: "",
+				secondMap: "",
+				thirdMap: "",
+				fourthMap: "",
 
 				firstWin: false,
 				secondWin: false,
@@ -144,12 +148,19 @@
 					this.fourthUser =
 						this.apiResult[3].results[this.fourthPageNum].user.login;
 					this.fourthLink = this.apiResult[3].results[this.fourthPageNum].uri;
+
+					this.updateMaps();
 				} else {
 					this.timesExecuted = 0;
 					this.warn();
 				}
 			},
-
+			updateMaps() {
+				this.firstMap = this.map_url_base + this.apiResult[0].results[this.firstPageNum].location;
+				this.secondMap = this.map_url_base + this.apiResult[1].results[this.secondPageNum].location;
+				this.thirdMap = this.map_url_base + this.apiResult[2].results[this.thirdPageNum].location;
+				this.fourthMap = this.map_url_base + this.apiResult[3].results[this.fourthPageNum].location;
+			},
 			checkNames() {
 				if (
 					this.apiResult[0].results[this.firstPageNum] === undefined ||
@@ -251,7 +262,9 @@
 			getMainInterface(mainInterface) {
 				this.$options.mainInterface = mainInterface;
 			},
-
+			showMaps() {
+				this.$options.mainInterface.showMaps();
+			},
 			hideNames() {
 				this.$options.mainInterface.hideNames();
 			},
@@ -270,6 +283,7 @@
 		},
 		mainInterface: {
 			hideNames: () => {},
+			showMaps: () => {},
 		},
 	};
 </script>
@@ -277,7 +291,6 @@
 
 <style lang="scss">
 	@import "@/assets/global.scss";
-	@import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css";
 
 	body {
 		margin: 0;

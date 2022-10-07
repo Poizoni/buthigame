@@ -10,6 +10,9 @@
 					</div>
 					<span v-if="showingNames">{{ $parent.firstname }}</span>
 				</button>
+				<div v-if="showingMaps" class="out">
+					<a target="_blank" rel="noopener noreferrer" :href="$parent.firstMap" class="fa fa-map-marker "></a>
+				</div>
 				<div v-if="showingNames" class="out">
 					<a target="_blank" rel="noopener noreferrer" :href="$parent.firstLink" class="fa fa-external-link"></a>
 				</div>
@@ -23,6 +26,9 @@
 					</div>
 					<span v-if="showingNames">{{ $parent.secondname }}</span>
 				</button>
+				<div v-if="showingMaps" class="out">
+					<a target="_blank" rel="noopener noreferrer" :href="$parent.secondMap" class="fa fa-map-marker "></a>
+				</div>
 				<div v-if="showingNames" class="out">
 					<a target="_blank" rel="noopener noreferrer" :href="$parent.secondLink" class="fa fa-external-link"></a>
 				</div>
@@ -38,6 +44,9 @@
 					</div>
 					<span v-if="showingNames">{{ $parent.thirdname }}</span>
 				</button>
+				<div v-if="showingMaps" class="out">
+					<a target="_blank" rel="noopener noreferrer" :href="$parent.thirdMap" class="fa fa-map-marker "></a>
+				</div>
 				<div v-if="showingNames" class="out">
 					<a target="_blank" rel="noopener noreferrer" :href="$parent.thirdLink" class="fa fa-external-link"></a>
 				</div>
@@ -51,6 +60,9 @@
 					</div>
 					<span v-if="showingNames">{{ $parent.fourthname }}</span>
 				</button>
+				<div v-if="showingMaps" class="out">
+					<a target="_blank" rel="noopener noreferrer" :href="$parent.fourthMap" class="fa fa-map-marker "></a>
+				</div>
 				<div v-if="showingNames" class="out">
 					<a target="_blank" rel="noopener noreferrer" :href="$parent.fourthLink" class="fa fa-external-link"></a>
 				</div>
@@ -65,6 +77,7 @@
 	data() {
 		return {
 		showingNames: false,
+		showingMaps: false,
 		};
 	},
 	mounted() {
@@ -77,7 +90,14 @@
 		hideNames() {
 		this.showingNames = false;
 		},
+		showMaps() {
+			this.showingMaps = true;
+		},
+		hideMaps() {
+			this.showingMaps = false;
+		},
 		firstClick() {
+		this.hideMaps();
 		this.$parent.isDisabled = true;
 		if (this.$parent.firstname === this.$parent.getFullName()) {
 			this.setScore();
@@ -88,6 +108,7 @@
 		this.showNames();
 		},
 		secondClick() {
+		this.hideMaps();
 		this.$parent.isDisabled = true;
 		if (this.$parent.secondname === this.$parent.getFullName()) {
 			this.setScore();
@@ -98,6 +119,7 @@
 		this.showNames();
 		},
 		thirdClick() {
+		this.hideMaps();
 		this.$parent.isDisabled = true;
 		if (this.$parent.thirdname === this.$parent.getFullName()) {
 			this.setScore();
@@ -108,6 +130,7 @@
 		this.showNames();
 		},
 		fourthClick() {
+		this.hideMaps();
 		this.$parent.isDisabled = true;
 		if (this.$parent.fourthname === this.$parent.getFullName()) {
 			this.setScore();
@@ -124,6 +147,7 @@
 		emitInterface() {
 		this.$emit("interface", {
 			hideNames: () => this.hideNames(),
+			showMaps: () => this.showMaps(),
 		});
 		},
 	},
@@ -131,6 +155,7 @@
 </script>
 
 <style lang="scss" scoped>
+	@import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css";
 	@import "@/assets/global.scss";
 
 	.body {

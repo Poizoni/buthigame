@@ -8,7 +8,7 @@ cd dist
 
 git init
 git add -A 
-git commit -m 'V5 Map Update Denmployment'
+git commit -m 'V6 Accuracy Update Deployment'
 git push -f git@github.com:Poizoni/ButhiGame.git master:gh-pages
 
 cd -

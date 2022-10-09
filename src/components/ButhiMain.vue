@@ -106,6 +106,8 @@
 			this.$parent.firstLose = true;
 		}
 		this.showNames();
+		this.$parent.incQuestions();
+		this.$parent.calcAcc();
 		},
 		secondClick() {
 		this.hideMaps();
@@ -117,6 +119,8 @@
 			this.$parent.secondLose = true;
 		}
 		this.showNames();
+		this.$parent.incQuestions();
+		this.$parent.calcAcc();
 		},
 		thirdClick() {
 		this.hideMaps();
@@ -128,6 +132,8 @@
 			this.$parent.thirdLose = true;
 		}
 		this.showNames();
+		this.$parent.incQuestions();
+		this.$parent.calcAcc();
 		},
 		fourthClick() {
 		this.hideMaps();
@@ -139,6 +145,8 @@
 			this.$parent.fourthLose = true;
 		}
 		this.showNames();
+		this.$parent.incQuestions();
+		this.$parent.calcAcc();
 		},
 		setScore() {
 		this.$parent.score++;
@@ -286,6 +294,7 @@
 		.grid {
 		flex: 1;
 		max-height: 36vh;
+
 
 		.btn > span {
 			padding-right: 5px;

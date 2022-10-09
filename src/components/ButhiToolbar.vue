@@ -21,26 +21,16 @@
 			</div>
 			<div class="buttons">
 				<button class="tool" @click=" openGuideModal() ">Guide</button>
-				<div class="tool load" v-if=" isLoading ">
+				<div class="tool load" v-if=" $parent.isLoading ">
 					<div class="spinner"></div>
 				</div>
-				<button class="tool" @click=" start() " v-if=" !isStarted && !isLoading ">Start</button>
-				<button class="tool" @click=" nextClick() " v-if=" isStarted && !isLoading">Next</button>
-			</div>
-		</div>
-		<div class="inputTool">
-			<div class="inputToolLeft">
-				<label for="input">taxon</label>
-				<input name="input" type="text" v-model="input">
-			</div>
-			<div class="inputToolRight">
-				<button @click=" checkInput() ">get</button>
-				<div class="check" v-if=" isInvalid ">invalid</div>
-				<div class="check" v-if=" !isInvalid ">valid</div>
+				<button class="tool" @click=" start() " v-if=" !$parent.isStarted && !$parent.isLoading ">Start</button>
+				<button class="tool" @click=" nextClick() " v-if=" $parent.isStarted && !$parent.isLoading">Next</button>
 			</div>
 		</div>
 		<div class="score-box">
-			<p class="score">Score {{ score }}</p>
+			<h2 class="score" id="bot">{{ score }} / {{ totalQuestions }}</h2>
+			<h2 class="score" id="top">{{ acc }}%</h2>
 		</div>
 	</div>
 </template>
@@ -50,15 +40,8 @@
 	name: "ButhiToolbar",
 	props: {
 		score: Number,
-	},
-	data() {
-		return {
-		isStarted: false,
-		isInvalid: false,
-		isLoading: false,
-		input: "",
-		onStart: 0,
-		};
+		totalQuestions: Number,
+		acc: Number,
 	},
 	methods: {
 		checkAny() {
@@ -72,151 +55,11 @@
 		this.$parent.openGuideModal();
 		},
 		start() {
-		this.isStarted = true;
-		this.nextClick();
+		this.$parent.isStarted = true;
+		this.$parent.nextClick();
 		},
 		nextClick() {
-		this.setPages();
-		this.fetchScorpions();
-
-		if (this.$parent.apiResult !== undefined) {
-			this.$parent.subspecies = undefined;
-			this.$parent.hideNames();
-			this.$parent.changePic();
-			this.$parent.setNames();
-			var guess = this.$parent.getOneName();
-			this.$parent.genus = guess.split(" ")[0];
-			this.$parent.species = guess.split(" ")[1];
-			if (guess.split(" ").length > 2) {
-			this.$parent.subspecies = guess.split(" ")[2];
-			}
-			this.$parent.showMaps();
-
-			this.$parent.firstWin = false;
-			this.$parent.secondWin = false;
-			this.$parent.thirdWin = false;
-			this.$parent.fourthWin = false;
-
-			this.$parent.firstLose = false;
-			this.$parent.secondLose = false;
-			this.$parent.thirdLose = false;
-			this.$parent.fourthLose = false;
-
-			this.$parent.isDisabled = false;
-		}
-		},
-		async fetchScorpions() {
-		if (this.onStart === 0) this.isLoading = true;
-		Promise.all([
-			await fetch(
-			`${
-				this.$parent.url_base
-			}observations?verifiable=true&photos=true&?hrank=species?lrank=species&taxon_id=${
-				this.$parent.query
-			}&place_id=&order_by=votes&quality_grade=research&page=${this.randomPage()}&per_page=${
-				this.$parent.perpage
-			}`
-			),
-			await fetch(
-			`${
-				this.$parent.url_base
-			}observations?verifiable=true&photos=true&?hrank=species?lrank=species&taxon_id=${
-				this.$parent.query
-			}&place_id=&order_by=votes&quality_grade=research&page=${this.randomPage()}&per_page=${
-				this.$parent.perpage
-			}`
-			),
-			await fetch(
-			`${
-				this.$parent.url_base
-			}observations?verifiable=true&photos=true&?hrank=species?lrank=species&taxon_id=${
-				this.$parent.query
-			}&place_id=&order_by=votes&quality_grade=research&page=${this.randomPage()}&per_page=${
-				this.$parent.perpage
-			}`
-			),
-			await fetch(
-			`${
-				this.$parent.url_base
-			}observations?verifiable=true&photos=true&?hrank=species?lrank=species&taxon_id=${
-				this.$parent.query
-			}&place_id=&order_by=votes&quality_grade=research&page=${this.randomPage()}&per_page=${
-				this.$parent.perpage
-			}`
-			),
-		])
-			.then(function (responses) {
-			return Promise.all(
-				responses.map(function (response) {
-				return response.json();
-				})
-			);
-			})
-			.then((response) => {
-			this.$parent.setResults(response);
-			if (this.onStart === 0) this.isLoading = false;
-			this.onStart = 1;
-			})
-			.catch((err) => {
-			console.error("error", err);
-			});
-		},
-		randomPage() {
-		return Math.floor(Math.random() * this.$parent.pageCount) + 1;
-		},
-		async checkInput() {
-		this.$parent.apiResult = undefined;
-		this.isLoading = true;
-
-		await fetch(
-			`https://api.inaturalist.org/v1/taxa?q=${this.input}&is_active=any&per_page=1`
-		)
-			.then((response) => response.json())
-			.then((data) => {
-			this.setQuery(data);
-			this.isLoading = false;
-			this.onStart = 0;
-			})
-			.catch((error) => {
-			console.error("eror" + error);
-			this.isInvalid = true;
-			});
-
-		this.setPages();
-		},
-		async setPages() {
-		await fetch(
-			`${this.$parent.url_base}observations?verifiable=true&photos=true&?hrank=species?lrank=species&taxon_id=${this.$parent.query}&place_id=&order_by=votes&quality_grade=research&page=1&per_page=1`
-		)
-			.then((response) => response.json())
-			.then((data) => {
-			if (data.total_results < 10) {
-				this.isInvalid = true;
-			}
-			if (Math.round(data.total_results / this.$parent.perpage) > 1000) {
-				this.$parent.pageCount = 1000;
-			} else {
-				this.$parent.pageCount = Math.round(
-				data.total_results / this.$parent.perpage
-				);
-			}
-
-			if (this.$parent.pageCount === 0) {
-				this.isInvalid = true;
-			}
-			})
-			.catch((error) => {
-			console.error("error" + error);
-			});
-		},
-		setQuery(data) {
-		try {
-			this.$parent.query = data.results[0].id;
-			this.isInvalid = false;
-		} catch (err) {
-			this.isInvalid = true;
-			console.error("error" + err);
-		}
+			this.$parent.nextClick();
 		},
 	},
 	};
@@ -237,60 +80,16 @@
 	justify-content: space-between;
 	background-color: $dark3;
 
-	.inputTool {
-		justify-self: center;
-		padding: 3px;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		.inputToolLeft {
+	.score-box {
 		text-align: center;
-		}
-		.inputToolRight {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		}
-		input {
-		all: unset;
-		background-color: $dark2;
-		width: 90px;
-		height: 30px;
-		margin-bottom: 10px;
 		color: $light2;
 		font-family: "Andale Mono", monospace;
-		border-radius: 4px;
+		#top {
+			margin-bottom: 0;
 		}
-		button {
-		width: 40px;
-		height: 20px;
-		background-color: $light2;
-		border: none;
-		border-radius: 4px;
-		color: $dark2;
-		font-family: "Andale Mono", monospace;
-		}
-
-		button:hover {
-		border: 1px solid $dark3;
-		}
-		button:active {
-		border: 2px solid $dark3;
-		font-size: 11px;
-		}
-
-		label {
-		color: $light2;
-		font-family: "Andale Mono", monospace;
-		font-size: 13px;
-		margin-bottom: 2px;
-		}
-		.check {
-		margin-top: 6px;
-		color: $light2;
-		font-family: "Andale Mono", monospace;
-		font-size: 13px;
-		font-weight: bold;
+		#bot {
+			margin-top: 5px;
+			font-size: 25px;
 		}
 	}
 	.tool {
@@ -420,15 +219,6 @@
 	.switch:active {
 		border: none;
 	}
-	.score-box {
-		text-align: center;
-		font-size: 30px;
-		font-family: "Andale Mono", monospace;
-		font-weight: bold;
-		color: $light2;
-		margin-left: 5px;
-		margin-right: 5px;
-	}
 	}
 
 	@media (max-width: 960px) {
@@ -441,18 +231,17 @@
 		justify-content: space-between;
 		align-items: center;
 		.tools {
-		display: flex;
+			display: flex;
 		}
 		.tool {
-		flex: 1;
 		width: 20vw;
-		margin-left: 10px;
-		height: 80px;
+		padding: 0;
+		height: 40px;
 		}
 		.toggles {
 		display: flex;
 		flex-direction: column;
-		width: 20vw;
+		margin-bottom: 5px;
 		}
 		.buttons {
 		display: flex;
@@ -460,24 +249,23 @@
 
 		width: 20vw;
 		margin-right: 8px;
-		}
-		.inputTool {
-		display: flex;
-		flex-direction: row;
-		flex: 0;
-		.inputToolLeft {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			margin-right: 10px;
-		}
+
 		}
 		.score-box {
-		padding: 5px;
-		height: auto;
+		display: flex;
+		flex-direction: column-reverse;
 		margin: 0;
-		justify-content: center;
+		padding: 5px;
 		font-size: 5vw;
+		align-items: center;
+			#top {
+				font-size: 40px;
+				margin-bottom: 5px;
+			}
+			#bot {
+				justify-self: flex-start;
+				align-self: flex-start;
+			}
 		}
 	}
 	}

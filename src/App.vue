@@ -2,7 +2,7 @@
 	<div class="container">
 		<ButhiHeader :genus=genus :species=species :subspecies=subspecies />
 		<div class="main-screen">
-			<ButhiToolbar :score=score />
+			<ButhiToolbar :score=score :acc=acc :totalQuestions=totalQuestions />
 			<ButhiMain @interface="getMainInterface" />
 		</div>
 	</div>
@@ -38,6 +38,13 @@
 				userSwitchOn: false,
 
 				score: 0,
+				totalQuestions: 0,
+				acc: 0,
+
+				isStarted: false,
+				isLoading: false,
+				isInvalid: false,
+				onStart: 0,
 
 				genus: "Genus",
 				species: "species",
@@ -161,6 +168,120 @@
 				this.thirdMap = this.map_url_base + this.apiResult[2].results[this.thirdPageNum].location;
 				this.fourthMap = this.map_url_base + this.apiResult[3].results[this.fourthPageNum].location;
 			},
+			nextClick() {
+			this.setPages();
+			this.fetchScorpions();
+
+			if (this.apiResult !== undefined) {
+				this.subspecies = undefined;
+				this.hideNames();
+				this.changePic();
+				this.setNames();
+				var guess = this.getOneName();
+				this.genus = guess.split(" ")[0];
+				this.species = guess.split(" ")[1];
+				if (guess.split(" ").length > 2) {
+				this.subspecies = guess.split(" ")[2];
+				}
+				this.showMaps();
+
+				this.firstWin = false;
+				this.secondWin = false;
+				this.thirdWin = false;
+				this.fourthWin = false;
+
+				this.firstLose = false;
+				this.secondLose = false;
+				this.thirdLose = false;
+				this.fourthLose = false;
+
+				this.isDisabled = false;
+			}
+			},
+			randomPage() {
+			return Math.floor(Math.random() * this.pageCount) + 1;
+			},
+			async fetchScorpions() {
+			if (this.onStart === 0) this.isLoading = true;
+			Promise.all([
+				await fetch(
+				`${
+					this.url_base
+				}observations?verifiable=true&photos=true&?hrank=species?lrank=species&taxon_id=${
+					this.query
+				}&place_id=&order_by=votes&quality_grade=research&page=${this.randomPage()}&per_page=${
+					this.perpage
+				}`
+				),
+				await fetch(
+				`${
+					this.url_base
+				}observations?verifiable=true&photos=true&?hrank=species?lrank=species&taxon_id=${
+					this.query
+				}&place_id=&order_by=votes&quality_grade=research&page=${this.randomPage()}&per_page=${
+					this.perpage
+				}`
+				),
+				await fetch(
+				`${
+					this.url_base
+				}observations?verifiable=true&photos=true&?hrank=species?lrank=species&taxon_id=${
+					this.query
+				}&place_id=&order_by=votes&quality_grade=research&page=${this.randomPage()}&per_page=${
+					this.perpage
+				}`
+				),
+				await fetch(
+				`${
+					this.url_base
+				}observations?verifiable=true&photos=true&?hrank=species?lrank=species&taxon_id=${
+					this.query
+				}&place_id=&order_by=votes&quality_grade=research&page=${this.randomPage()}&per_page=${
+					this.perpage
+				}`
+				),
+			])
+				.then(function (responses) {
+				return Promise.all(
+					responses.map(function (response) {
+					return response.json();
+					})
+				);
+				})
+				.then((response) => {
+				this.setResults(response);
+				if (this.onStart === 0) this.isLoading = false;
+				this.onStart = 1;
+				})
+				.catch((err) => {
+				console.error("error", err);
+				});
+			},
+			async setPages() {
+			await fetch(
+				`${this.url_base}observations?verifiable=true&photos=true&?hrank=species?lrank=species&taxon_id=${this.query}&place_id=&order_by=votes&quality_grade=research&page=1&per_page=1`
+			)
+				.then((response) => response.json())
+				.then((data) => {
+				if (data.total_results < 10) {
+					this.isInvalid = true;
+				}
+				if (Math.round(data.total_results / this.perpage) > 1000) {
+					this.pageCount = 1000;
+				} else {
+					this.pageCount = Math.round(
+					data.total_results / this.perpage
+					);
+				}
+
+				if (this.pageCount === 0) {
+					this.isInvalid = true;
+				}
+				})
+				.catch((error) => {
+				console.error("error" + error);
+				});
+			},
 			checkNames() {
 				if (
 					this.apiResult[0].results[this.firstPageNum] === undefined ||
@@ -187,7 +308,12 @@
 					return this.changePic();
 				}
 			},
-
+			incQuestions() {
+				this.totalQuestions++;
+			},
+			calcAcc() {
+				this.acc = Math.round(((this.score / this.totalQuestions) * 100) * 100) / 100;
+			},
 			setNames() {
 				this.names[0] = this.firstname;
 				this.names[1] = this.secondname;

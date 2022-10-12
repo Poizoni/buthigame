@@ -392,27 +392,31 @@
 			openGuideModal() {
 				this.$options.guideInterface.openGuideModal();
 			},
-			openMapModal(selected) {
+			async openMapModal(selected) {
 				switch(selected) {
 					case 1:
 						this.lat = parseFloat(this.firstCoords[0]);
 						this.lon = parseFloat(this.firstCoords[1]);
-						this.$options.mapInterface.openMapModal();
+						await this.$options.mapInterface.openMapModal();
+						this.drawMap();
 						break;
 					case 2:
 						this.lat = parseFloat(this.secondCoords[0]);
 						this.lon = parseFloat(this.secondCoords[1]);
-						this.$options.mapInterface.openMapModal();
+						await this.$options.mapInterface.openMapModal();
+						this.drawMap();
 						break;	
 					case 3:
 						this.lat = parseFloat(this.thirdCoords[0]);
 						this.lon = parseFloat(this.thirdCoords[1]);
-						this.$options.mapInterface.openMapModal();
+						await this.$options.mapInterface.openMapModal();
+						this.drawMap();
 						break;
 					case 4:
 						this.lat = parseFloat(this.fourthCoords[0]);
 						this.lon = parseFloat(this.fourthCoords[1]);
-						this.$options.mapInterface.openMapModal();
+						await this.$options.mapInterface.openMapModal();
+						this.drawMap();
 						break;
 					default:
 						console.log("error")

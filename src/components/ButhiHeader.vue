@@ -133,6 +133,7 @@
 		border-radius: 4px;
 		color: $dark2;
 		font-family: "Andale Mono", monospace;
+		cursor: pointer;
 		}
 
 		button:hover {

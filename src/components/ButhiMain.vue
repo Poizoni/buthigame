@@ -11,7 +11,7 @@
 					<span v-if="showingNames">{{ $parent.firstname }}</span>
 				</button>
 				<div v-if="showingMaps" class="out">
-					<i @click="$parent.openMapModal(1)" class="fa fa-map-marker "></i>
+					<i @click="$parent.openMapModal(1);" class="fa fa-map-marker "></i>
 				</div>
 				<div v-if="showingNames" class="out">
 					<a target="_blank" rel="noopener noreferrer" :href="$parent.firstLink" class="fa fa-external-link"></a>
@@ -97,6 +97,7 @@
 			this.showingMaps = false;
 		},
 		firstClick() {
+		if(this.$parent.isDisabled == false) {
 		this.hideMaps();
 		this.$parent.isDisabled = true;
 		if (this.$parent.firstname === this.$parent.getFullName()) {
@@ -108,8 +109,10 @@
 		this.showNames();
 		this.$parent.incQuestions();
 		this.$parent.calcAcc();
+	}
 		},
 		secondClick() {
+			if(this.$parent.isDisabled == false) {
 		this.hideMaps();
 		this.$parent.isDisabled = true;
 		if (this.$parent.secondname === this.$parent.getFullName()) {
@@ -121,8 +124,10 @@
 		this.showNames();
 		this.$parent.incQuestions();
 		this.$parent.calcAcc();
+	}
 		},
 		thirdClick() {
+			if(this.$parent.isDisabled == false) {
 		this.hideMaps();
 		this.$parent.isDisabled = true;
 		if (this.$parent.thirdname === this.$parent.getFullName()) {
@@ -134,8 +139,10 @@
 		this.showNames();
 		this.$parent.incQuestions();
 		this.$parent.calcAcc();
+	}
 		},
 		fourthClick() {
+			if(this.$parent.isDisabled == false) {
 		this.hideMaps();
 		this.$parent.isDisabled = true;
 		if (this.$parent.fourthname === this.$parent.getFullName()) {
@@ -147,6 +154,7 @@
 		this.showNames();
 		this.$parent.incQuestions();
 		this.$parent.calcAcc();
+	}
 		},
 		setScore() {
 		this.$parent.score++;
@@ -231,6 +239,7 @@
 		border-radius: 4px;
 		background-color: $dark3;
 		transition: 0.1s;
+		cursor: pointer;
 		a {
 			font-size: 24px;
 			color: $light2;

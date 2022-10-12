@@ -110,6 +110,10 @@
 		font-size: 20px;
 		border: none;
 	}
+	button {
+		cursor: pointer;
+
+	}
 	.tool:hover {
 		border: 3px solid $dark3;
 	}
@@ -260,15 +264,14 @@
 		display: flex;
 		margin: 0;
 		padding: 10px;
-		font-size: 50px;
 		align-items: center;
 			#top {
-				font-size: 40px;
+				font-size: 5vw;
 				margin: 0;
 			}
 			#bot {
 				margin: 0;
-				font-size: 40px;
+				font-size: 5vw;
 				margin-right: 40px;
 
 			}

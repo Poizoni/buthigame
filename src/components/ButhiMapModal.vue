@@ -5,7 +5,7 @@
 			<div class="modal__body">
 				
 				<div id="mapid2"></div>
-				<button id="load" v-if="showingLoad" @click=" drawMap(); disableLoad(); ">load map</button>
+				<!-- <button id="load" v-if="showingLoad" @click=" drawMap(); disableLoad(); ">load map</button> -->
 
 			</div>
 		</div>

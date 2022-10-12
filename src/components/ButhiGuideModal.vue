@@ -96,6 +96,7 @@
 		border: none;
 		border-radius: 4px;
 		transition: 0.1s;
+		cursor: pointer;
 	}
 	&__close:hover {
 		border: 2px solid $dark4;

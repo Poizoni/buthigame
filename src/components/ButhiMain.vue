@@ -11,7 +11,7 @@
 					<span v-if="showingNames">{{ $parent.firstname }}</span>
 				</button>
 				<div v-if="showingMaps" class="out">
-					<a target="_blank" rel="noopener noreferrer" :href="$parent.firstMap" class="fa fa-map-marker "></a>
+					<i @click="$parent.openMapModal(1)" class="fa fa-map-marker "></i>
 				</div>
 				<div v-if="showingNames" class="out">
 					<a target="_blank" rel="noopener noreferrer" :href="$parent.firstLink" class="fa fa-external-link"></a>
@@ -27,7 +27,7 @@
 					<span v-if="showingNames">{{ $parent.secondname }}</span>
 				</button>
 				<div v-if="showingMaps" class="out">
-					<a target="_blank" rel="noopener noreferrer" :href="$parent.secondMap" class="fa fa-map-marker "></a>
+					<i @click="$parent.openMapModal(2)" class="fa fa-map-marker "></i>
 				</div>
 				<div v-if="showingNames" class="out">
 					<a target="_blank" rel="noopener noreferrer" :href="$parent.secondLink" class="fa fa-external-link"></a>
@@ -45,7 +45,7 @@
 					<span v-if="showingNames">{{ $parent.thirdname }}</span>
 				</button>
 				<div v-if="showingMaps" class="out">
-					<a target="_blank" rel="noopener noreferrer" :href="$parent.thirdMap" class="fa fa-map-marker "></a>
+					<i @click="$parent.openMapModal(3)" class="fa fa-map-marker "></i>
 				</div>
 				<div v-if="showingNames" class="out">
 					<a target="_blank" rel="noopener noreferrer" :href="$parent.thirdLink" class="fa fa-external-link"></a>
@@ -61,7 +61,7 @@
 					<span v-if="showingNames">{{ $parent.fourthname }}</span>
 				</button>
 				<div v-if="showingMaps" class="out">
-					<a target="_blank" rel="noopener noreferrer" :href="$parent.fourthMap" class="fa fa-map-marker "></a>
+					<i @click="$parent.openMapModal(4)" class="fa fa-map-marker "></i>
 				</div>
 				<div v-if="showingNames" class="out">
 					<a target="_blank" rel="noopener noreferrer" :href="$parent.fourthLink" class="fa fa-external-link"></a>
@@ -240,6 +240,17 @@
 			font-size: 26px;
 		}
 		a:active {
+			font-size: 26px;
+		}
+		i {
+			font-size: 24px;
+			color: $light2;
+			text-decoration: none;
+		}
+		i:hover {
+			font-size: 26px;
+		}
+		i:active {
 			font-size: 26px;
 		}
 		}

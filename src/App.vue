@@ -8,6 +8,7 @@
 	</div>
 	<ButhiGuideModal @interface="getGuideInterface" />
 	<ButhiWarnModal @interface="getWarnInterface" />
+	<ButhiMapModal	@interface="getMapInterface" :lat=lat :lon=lon />
 </template>
 
 <script>
@@ -15,6 +16,7 @@
 	import ButhiToolbar from "./components/ButhiToolbar.vue";
 	import ButhiWarnModal from "./components/ButhiWarnModal.vue";
 	import ButhiGuideModal from "./components/ButhiGuideModal.vue";
+	import ButhiMapModal from "./components/ButhiMapModal.vue";
 	import ButhiMain from "./components/ButhiMain.vue";
 
 	export default {
@@ -24,12 +26,12 @@
 			ButhiToolbar,
 			ButhiWarnModal,
 			ButhiGuideModal,
+			ButhiMapModal,
 			ButhiMain,
 		},
 		data() {
 			return {
 				url_base: "https://api.inaturalist.org/v1/",
-				map_url_base: "https://maps.google.com/?q=",
 				apiResult: undefined,
 				query: "",
 
@@ -77,11 +79,6 @@
 				thirdLink: "",
 				fourthLink: "",
 
-				firstMap: "",
-				secondMap: "",
-				thirdMap: "",
-				fourthMap: "",
-
 				firstWin: false,
 				secondWin: false,
 				thirdWin: false,
@@ -96,15 +93,21 @@
 				secondPageNum: 1,
 				thirdPageNum: 1,
 				fourthPageNum: 1,
+				
+				firstCoords: [],
+				secondCoords: [],
+				thirdCoords: [],
+				fourthCoords: [],
 
 				perpage: 10,
 				pageCount: 1,
 
 				timesExecuted: 0,
 				isDisabled: true,
-			};
+				lat: 0,
+				lon: 0,
+						};
 		},
-
 		methods: {
 			changePic() {
 				if (this.timesExecuted < 300) {
@@ -156,17 +159,29 @@
 						this.apiResult[3].results[this.fourthPageNum].user.login;
 					this.fourthLink = this.apiResult[3].results[this.fourthPageNum].uri;
 
-					this.updateMaps();
+					this.updateCoords();
 				} else {
 					this.timesExecuted = 0;
 					this.warn();
 				}
 			},
-			updateMaps() {
-				this.firstMap = this.map_url_base + this.apiResult[0].results[this.firstPageNum].location;
-				this.secondMap = this.map_url_base + this.apiResult[1].results[this.secondPageNum].location;
-				this.thirdMap = this.map_url_base + this.apiResult[2].results[this.thirdPageNum].location;
-				this.fourthMap = this.map_url_base + this.apiResult[3].results[this.fourthPageNum].location;
+			updateCoords() {
+				var str1 = this.apiResult[0].results[this.firstPageNum].location;
+				str1 = str1.replace(/,/g, " ")
+				this.firstCoords = str1.split(' ');
+
+				var str2 = this.apiResult[1].results[this.secondPageNum].location;
+				str2 = str2.replace(/,/g, " ")
+				this.secondCoords = str2.split(' ');
+
+				var str3 = this.apiResult[2].results[this.thirdPageNum].location;
+				str3 = str3.replace(/,/g, " ")
+				this.thirdCoords = str3.split(' ');
+
+				var str4 = this.apiResult[3].results[this.fourthPageNum].location;
+				str4 = str4.replace(/,/g, " ")
+				this.fourthCoords = str4.split(' ');
+
 			},
 			nextClick() {
 			this.setPages();
@@ -320,32 +335,6 @@
 				this.names[2] = this.thirdname;
 				this.names[3] = this.fourthname;
 			},
-			setLocation() {
-				if (
-					this.getFullName() ===
-					this.apiResult[0].results[this.firstPageNum].taxon.name
-				)
-					this.location =
-						this.apiResult[0].results[this.firstPageNum].place_guess;
-				if (
-					this.getFullName() ===
-					this.apiResult[1].results[this.secondPageNum].taxon.name
-				)
-					this.location =
-						this.apiResult[1].results[this.secondPageNum].place_guess;
-				if (
-					this.getFullName() ===
-					this.apiResult[2].results[this.thirdPageNum].taxon.name
-				)
-					this.location =
-						this.apiResult[2].results[this.thirdPageNum].place_guess;
-				if (
-					this.getFullName() ===
-					this.apiResult[3].results[this.fourthPageNum].taxon.name
-				)
-					this.location =
-						this.apiResult[3].results[this.fourthPageNum].place_guess;
-			},
 			setResults(results) {
 				this.apiResult = results;
 			},
@@ -388,6 +377,9 @@
 			getMainInterface(mainInterface) {
 				this.$options.mainInterface = mainInterface;
 			},
+			getMapInterface(mapInterface) {
+				this.$options.mapInterface = mapInterface;
+			},
 			showMaps() {
 				this.$options.mainInterface.showMaps();
 			},
@@ -400,6 +392,36 @@
 			openGuideModal() {
 				this.$options.guideInterface.openGuideModal();
 			},
+			openMapModal(selected) {
+				switch(selected) {
+					case 1:
+						this.lat = parseFloat(this.firstCoords[0]);
+						this.lon = parseFloat(this.firstCoords[1]);
+						this.$options.mapInterface.openMapModal();
+						break;
+					case 2:
+						this.lat = parseFloat(this.secondCoords[0]);
+						this.lon = parseFloat(this.secondCoords[1]);
+						this.$options.mapInterface.openMapModal();
+						break;	
+					case 3:
+						this.lat = parseFloat(this.thirdCoords[0]);
+						this.lon = parseFloat(this.thirdCoords[1]);
+						this.$options.mapInterface.openMapModal();
+						break;
+					case 4:
+						this.lat = parseFloat(this.fourthCoords[0]);
+						this.lon = parseFloat(this.fourthCoords[1]);
+						this.$options.mapInterface.openMapModal();
+						break;
+					default:
+						console.log("error")
+				}
+			},
+			drawMap() {
+					this.$options.mapInterface.drawMap();
+
+			}
 		},
 		warnInterface: {
 			openWarnModal: () => {},
@@ -410,6 +432,10 @@
 		mainInterface: {
 			hideNames: () => {},
 			showMaps: () => {},
+		},
+		mapInterface: {
+			openMapModal: () => {},
+			drawMap: () => {},
 		},
 	};
 </script>

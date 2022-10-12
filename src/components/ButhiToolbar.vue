@@ -29,7 +29,7 @@
 			</div>
 		</div>
 		<div class="score-box">
-			<h2 class="score" id="bot">{{ score }} / {{ totalQuestions }}</h2>
+			<h2 class="score" id="bot"><sup>{{ score }}</sup>&frasl;<sub>{{ totalQuestions }}</sub></h2>
 			<h2 class="score" id="top">{{ acc }}%</h2>
 		</div>
 	</div>
@@ -84,6 +84,11 @@
 		text-align: center;
 		color: $light2;
 		font-family: "Andale Mono", monospace;
+		background-color: $dark2;
+		border-radius: 10px;
+		margin: 5px;
+		padding: 3px;
+		box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
 		#top {
 			margin-bottom: 0;
 		}
@@ -253,18 +258,19 @@
 		}
 		.score-box {
 		display: flex;
-		flex-direction: column-reverse;
 		margin: 0;
-		padding: 5px;
-		font-size: 5vw;
+		padding: 10px;
+		font-size: 50px;
 		align-items: center;
 			#top {
 				font-size: 40px;
-				margin-bottom: 5px;
+				margin: 0;
 			}
 			#bot {
-				justify-self: flex-start;
-				align-self: flex-start;
+				margin: 0;
+				font-size: 40px;
+				margin-right: 40px;
+
 			}
 		}
 	}

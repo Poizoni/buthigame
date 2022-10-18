@@ -9,6 +9,7 @@
 					<li>Start</li>
 					<li>Wait for loading to finish, then click next</li>
 					<li>For unclear photos, press next to skip</li>
+					<li>Use iNaturalist taxon id's if dealing with duplicate taxonomy</li>
 					<li>Practice your identification skills and enjoy!</li>
 				</ul>
 			</div>

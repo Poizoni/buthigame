@@ -39,10 +39,11 @@
 		this.$parent.apiResult = undefined;
 		this.$parent.isLoading = true;
 
-		await fetch(
-			`https://api.inaturalist.org/v1/taxa?q=${this.input}&is_active=any&per_page=1`
+		if(this.hasNumber(this.input)) {
+			await fetch(
+			`https://api.inaturalist.org/v1/taxa?taxon_id=${this.input}&is_active=any&per_page=1`
 		)
-			.then((response) => response.json())
+		.then((response) => response.json())
 			.then((data) => {
 			this.setQuery(data);
 			this.$parent.isLoading = false;
@@ -52,8 +53,26 @@
 			console.error("eror" + error);
 			this.$parent.isInvalid = true;
 			});
+		} else {
+		await fetch(
+			`https://api.inaturalist.org/v1/taxa?q=${this.input}&is_active=any&per_page=1`
+		)
+		.then((response) => response.json())
+			.then((data) => {
+			this.setQuery(data);
+			this.$parent.isLoading = false;
+			this.$parent.onStart = 0;
+			})
+			.catch((error) => {
+			console.error("eror" + error);
+			this.$parent.isInvalid = true;
+			});
+		}
 
 		this.$parent.setPages();
+		},
+		hasNumber(string) {
+			return /\d/.test(string);
 		},
 		setQuery(data) {
 		try {

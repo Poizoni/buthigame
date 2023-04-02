@@ -33,11 +33,14 @@
 			return {
 				url_base: "https://api.inaturalist.org/v1/",
 				apiResult: undefined,
+				orderResult: undefined,
 				query: "",
 
 				anyOn: false,
 				dateSwitchOn: false,
 				userSwitchOn: false,
+				orderSwitchOn: false,
+				familySwitchOn: false,
 
 				score: 0,
 				totalQuestions: 0,
@@ -58,6 +61,16 @@
 				secondname: "",
 				thirdname: "",
 				fourthname: "",
+
+				firstOrder: "",
+				secondOrder: "",
+				thirdOrder: "",
+				fourthOrder: "",
+
+				firstFamily: "",
+				secondFamily: "",
+				thirdFamily: "",
+				fourthFamily: "",
 
 				first: "https://i.imgur.com/hs8VDXc.jpg",
 				second: "https://i.imgur.com/gKFhqMb.jpeg",
@@ -159,6 +172,24 @@
 						this.apiResult[3].results[this.fourthPageNum].user.login;
 					this.fourthLink = this.apiResult[3].results[this.fourthPageNum].uri;
 
+					if(this.orderSwitchOn) {
+						this.setOrders();
+						
+						this.firstname = this.firstOrder;
+						this.secondname = this.secondOrder;
+						this.thirdname = this.thirdOrder;
+						this.fourthname = this.fourthOrder;
+					}
+					if(this.familySwitchOn) {
+						this.setFamilies();
+						
+						this.firstname = this.firstFamily;
+						this.secondname = this.secondFamily;
+						this.thirdname = this.thirdFamily;
+						this.fourthname = this.fourthFamily;
+					}
+
+
 					this.updateCoords();
 				} else {
 					this.timesExecuted = 0;
@@ -188,16 +219,19 @@
 			this.fetchScorpions();
 
 			if (this.apiResult !== undefined) {
+				console.log(this.apiResult);
 				this.subspecies = undefined;
+				this.species = undefined;
 				this.hideNames();
 				this.changePic();
 				this.setNames();
 				var guess = this.getOneName();
-				this.genus = guess.split(" ")[0];
-				this.species = guess.split(" ")[1];
-				if (guess.split(" ").length > 2) {
-				this.subspecies = guess.split(" ")[2];
-				}
+					this.genus = guess.split(" ")[0];
+					this.species = guess.split(" ")[1];
+					if (guess.split(" ").length > 2) {
+					this.subspecies = guess.split(" ")[2];
+					}
+				
 				this.showMaps();
 
 				this.firstWin = false;
@@ -325,6 +359,106 @@
 			},
 			incQuestions() {
 				this.totalQuestions++;
+			},
+			setOrders() {
+				for(var i = 0; i < this.apiResult[0].results[this.firstPageNum].identifications.length; i++) {
+					if (this.apiResult[0].results[this.firstPageNum].identifications[i].category == "supporting")  {
+						for(var k = 0; k < this.apiResult[0].results[this.firstPageNum].identifications[i].taxon.ancestors.length; k++) {
+							if (this.apiResult[0].results[this.firstPageNum].identifications[i].taxon.ancestors[k].rank == "order")  {
+								this.firstOrder = this.apiResult[0].results[this.firstPageNum].identifications[i].taxon.ancestors[k].name
+								break;
+							}
+				}
+
+					}
+				}
+
+				for(var j = 0; j < this.apiResult[1].results[this.secondPageNum].identifications.length; j++) {
+					if (this.apiResult[1].results[this.secondPageNum].identifications[j].category == "supporting")  {
+						for(var h = 0; h < this.apiResult[1].results[this.secondPageNum].identifications[j].taxon.ancestors.length; h++) {
+							if (this.apiResult[1].results[this.secondPageNum].identifications[j].taxon.ancestors[h].rank == "order")  {
+								this.secondOrder = this.apiResult[1].results[this.secondPageNum].identifications[j].taxon.ancestors[h].name
+								break;
+							}
+				}
+
+					}
+				}
+
+				for(var f = 0; f < this.apiResult[2].results[this.thirdPageNum].identifications.length; f++) {
+					if (this.apiResult[2].results[this.thirdPageNum].identifications[f].category == "supporting")  {
+						for(var r = 0; r < this.apiResult[2].results[this.thirdPageNum].identifications[f].taxon.ancestors.length; r++) {
+							if (this.apiResult[2].results[this.thirdPageNum].identifications[f].taxon.ancestors[r].rank == "order")  {
+								this.thirdOrder = this.apiResult[2].results[this.thirdPageNum].identifications[f].taxon.ancestors[r].name
+								break;
+							}
+				}
+
+					}
+				}
+
+				for(var x = 0; x < this.apiResult[3].results[this.fourthPageNum].identifications.length; x++) {
+					if (this.apiResult[3].results[this.fourthPageNum].identifications[x].category == "supporting")  {
+						for(var y = 0; y < this.apiResult[3].results[this.fourthPageNum].identifications[x].taxon.ancestors.length; y++) {
+							if (this.apiResult[3].results[this.fourthPageNum].identifications[x].taxon.ancestors[y].rank == "order")  {
+
+								this.fourthOrder = this.apiResult[3].results[this.fourthPageNum].identifications[x].taxon.ancestors[y].name
+								break;
+							}
+				}
+
+					}
+				}
+			},
+			setFamilies() {
+				for(var i = 0; i < this.apiResult[0].results[this.firstPageNum].identifications.length; i++) {
+					if (this.apiResult[0].results[this.firstPageNum].identifications[i].category == "supporting")  {
+						for(var k = 0; k < this.apiResult[0].results[this.firstPageNum].identifications[i].taxon.ancestors.length; k++) {
+							if (this.apiResult[0].results[this.firstPageNum].identifications[i].taxon.ancestors[k].rank == "family")  {
+								this.firstFamily = this.apiResult[0].results[this.firstPageNum].identifications[i].taxon.ancestors[k].name
+								break;
+							}
+				}
+
+					}
+				}
+
+				for(var j = 0; j < this.apiResult[1].results[this.secondPageNum].identifications.length; j++) {
+					if (this.apiResult[1].results[this.secondPageNum].identifications[j].category == "supporting")  {
+						for(var h = 0; h < this.apiResult[1].results[this.secondPageNum].identifications[j].taxon.ancestors.length; h++) {
+							if (this.apiResult[1].results[this.secondPageNum].identifications[j].taxon.ancestors[h].rank == "family")  {
+								this.secondFamily = this.apiResult[1].results[this.secondPageNum].identifications[j].taxon.ancestors[h].name
+								break;
+							}
+				}
+
+					}
+				}
+
+				for(var f = 0; f < this.apiResult[2].results[this.thirdPageNum].identifications.length; f++) {
+					if (this.apiResult[2].results[this.thirdPageNum].identifications[f].category == "supporting")  {
+						for(var r = 0; r < this.apiResult[2].results[this.thirdPageNum].identifications[f].taxon.ancestors.length; r++) {
+							if (this.apiResult[2].results[this.thirdPageNum].identifications[f].taxon.ancestors[r].rank == "family")  {
+								this.thirdFamily = this.apiResult[2].results[this.thirdPageNum].identifications[f].taxon.ancestors[r].name
+								break;
+							}
+				}
+
+					}
+				}
+
+				for(var x = 0; x < this.apiResult[3].results[this.fourthPageNum].identifications.length; x++) {
+					if (this.apiResult[3].results[this.fourthPageNum].identifications[x].category == "supporting")  {
+						for(var y = 0; y < this.apiResult[3].results[this.fourthPageNum].identifications[x].taxon.ancestors.length; y++) {
+							if (this.apiResult[3].results[this.fourthPageNum].identifications[x].taxon.ancestors[y].rank == "family")  {
+
+								this.fourthFamily = this.apiResult[3].results[this.fourthPageNum].identifications[x].taxon.ancestors[y].name
+								break;
+							}
+				}
+
+					}
+				}
 			},
 			calcAcc() {
 				this.acc = Math.round(((this.score / this.totalQuestions) * 100) * 100) / 100;

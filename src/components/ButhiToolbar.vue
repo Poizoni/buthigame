@@ -2,6 +2,7 @@
 	<div class="toolbar">
 		<div class="tools">
 			<div class="toggles">
+			
 				<div class="tool switch">
 					<p>user</p>
 					<div class="toggle off" :class="{ on: $parent.userSwitchOn }">
@@ -18,7 +19,29 @@
 						<div class="toggle-side toggle-side_on" :class="{ on: $parent.dateSwitchOn }"></div>
 					</div>
 				</div>
+				
 			</div>
+			<div class="toggles">
+			
+			<div class="tool switch">
+				<p>order mode</p>
+				<div class="toggle off" :class="{ on: $parent.orderSwitchOn }">
+					<div class="toggle-side toggle-side_off" :class="{ on: $parent.orderSwitchOn }"></div>
+					<div class="toggle-switch" :class="{ on: $parent.orderSwitchOn }" @click="$parent.orderSwitchOn = !$parent.orderSwitchOn; checkAny(); checkFamily();"></div>
+					<div class="toggle-side toggle-side_on" :class="{ on: $parent.orderSwitchOn }"></div>
+				</div>
+			</div>
+			<div class="tool switch">
+				<p>fam mode</p>
+				<div class="toggle off" :class="{ on: $parent.familySwitchOn }">
+					<div class="toggle-side toggle-side_off" :class="{ on: $parent.familySwitchOn }"></div>
+					<div class="toggle-switch" :class="{ on: $parent.familySwitchOn }" @click="$parent.familySwitchOn = !$parent.familySwitchOn; checkAny(); checkOrder();"></div>
+					<div class="toggle-side toggle-side_on" :class="{ on: $parent.familySwitchOn }"></div>
+				</div>
+			</div>
+			
+		</div>
+			
 			<div class="buttons">
 				<button class="tool" @click=" openGuideModal() ">Guide</button>
 				<div class="tool load" v-if=" $parent.isLoading ">
@@ -50,6 +73,16 @@
 		} else {
 			this.$parent.anyOn = false;
 		}
+		},
+		checkOrder() {
+			if(this.$parent.orderSwitchOn) {
+				this.$parent.orderSwitchOn = false
+			}
+		},
+		checkFamily() {
+			if(this.$parent.familySwitchOn) {
+				this.$parent.familySwitchOn = false
+			}
 		},
 		openGuideModal() {
 		this.$parent.openGuideModal();
